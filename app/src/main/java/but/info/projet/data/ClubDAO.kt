@@ -71,6 +71,19 @@ class ClubDao(private val dbHelper: DatabaseHelper) {
     }
 
     fun update(club: Club) {
+        val db = dbHelper.writableDatabase
 
+        val values = ContentValues().apply {
+            put("name", club.name)
+            put("address", club.address)
+            put("active", club.active)
+        }
+
+        db.update(
+            "club",
+            values,
+            "id = ?",
+            arrayOf(club.id.toString())
+        )
     }
 }
