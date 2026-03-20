@@ -1,4 +1,8 @@
 package but.info.projet.data
 
-class Club {
-}
+data class Club(
+    val id: Long,
+    val name: String,
+    val address: String,
+    var active: Int
+)
