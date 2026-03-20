@@ -1,4 +1,4 @@
-package but.info.projet
+package but.info.projet.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,9 +18,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ProjetTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.Companion.fillMaxSize()) { innerPadding ->
                     App(
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.Companion.padding(innerPadding)
                     )
                 }
             }
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun App(modifier: Modifier = Modifier) {
+fun App(modifier: Modifier = Modifier.Companion) {
 
 }
 
