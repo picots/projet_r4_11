@@ -5,7 +5,7 @@ import java.net.URL
 
 class ClubAPI {
 
-    private val baseUrl = "https://localhost:8000/api"
+    private val baseUrl = "http://localhost:8000/api"
 
     fun getAllClubs(): String {
         val url = URL("$baseUrl/clubs")
