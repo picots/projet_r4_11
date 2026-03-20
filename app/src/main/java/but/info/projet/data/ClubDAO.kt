@@ -1,5 +1,7 @@
 package but.info.projet.data
 
+import android.content.ContentValues
+import android.database.sqlite.SQLiteDatabase
 import but.info.projet.utils.DatabaseHelper
 
 
@@ -49,7 +51,23 @@ class ClubDao(private val dbHelper: DatabaseHelper) {
     }
 
     fun insertAll(clubs: List<Club>) {
+        val db = dbHelper.writableDatabase
 
+        for (club in clubs) {
+            val values = ContentValues().apply {
+                put("id", club.id)
+                put("name", club.name)
+                put("address", club.address)
+                put("active", club.active)
+            }
+
+            db.insertWithOnConflict(
+                "club",
+                null,
+                values,
+                SQLiteDatabase.CONFLICT_REPLACE
+            )
+        }
     }
 
     fun update(club: Club) {
