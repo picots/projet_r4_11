@@ -18,7 +18,8 @@ class ClubDao(private val dbHelper: DatabaseHelper) {
                     id = cursor.getLong(cursor.getColumnIndexOrThrow("id")),
                     name = cursor.getString(cursor.getColumnIndexOrThrow("name")),
                     address = cursor.getString(cursor.getColumnIndexOrThrow("address")),
-                    active = cursor.getInt(cursor.getColumnIndexOrThrow("active"))
+                    active = cursor.getInt(cursor.getColumnIndexOrThrow("active")),
+                    dirty = cursor.getInt(cursor.getColumnIndexOrThrow("dirty"))
                 )
                 clubs.add(club)
             } while (cursor.moveToNext())
@@ -40,7 +41,8 @@ class ClubDao(private val dbHelper: DatabaseHelper) {
                     id = cursor.getLong(cursor.getColumnIndexOrThrow("id")),
                     name = cursor.getString(cursor.getColumnIndexOrThrow("name")),
                     address = cursor.getString(cursor.getColumnIndexOrThrow("address")),
-                    active = cursor.getInt(cursor.getColumnIndexOrThrow("active"))
+                    active = cursor.getInt(cursor.getColumnIndexOrThrow("active")),
+                    dirty = cursor.getInt(cursor.getColumnIndexOrThrow("dirty"))
                 )
                 clubs.add(club)
             } while (cursor.moveToNext())
@@ -59,6 +61,7 @@ class ClubDao(private val dbHelper: DatabaseHelper) {
                 put("name", club.name)
                 put("address", club.address)
                 put("active", club.active)
+                put("dirty", club.dirty)
             }
 
             db.insertWithOnConflict(
@@ -77,6 +80,7 @@ class ClubDao(private val dbHelper: DatabaseHelper) {
             put("name", club.name)
             put("address", club.address)
             put("active", club.active)
+            put("dirty", 1)
         }
 
         db.update(
