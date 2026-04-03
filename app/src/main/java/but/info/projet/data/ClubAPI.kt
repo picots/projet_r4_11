@@ -6,7 +6,8 @@ import java.net.URL
 
 class ClubAPI {
 
-    private val baseUrl = "https://sae3g5.skopee.fr/api/clubs" //https://g5-devc3.unicaen.fr/api/clubs
+    private val baseUrl =
+        "https://sae3g5.skopee.fr/api/clubs" //https://g5-devc3.unicaen.fr/api/clubs
 
     fun getAllClubs(): String {
         val url = URL(baseUrl)
@@ -28,7 +29,7 @@ class ClubAPI {
     }
 
     fun deactivateClub(id: Long): Boolean {
-        val url = URL(baseUrl + "clubs/$id")
+        val url = URL("$baseUrl/$id")
         val connection = url.openConnection() as HttpURLConnection
 
         return try {
@@ -50,7 +51,7 @@ class ClubAPI {
             if (responseCode in 200..299) {
                 true
             } else {
-                Log.e("API","Erreur API : $responseCode")
+                Log.e("API", "Erreur API : $responseCode")
                 false
             }
 
