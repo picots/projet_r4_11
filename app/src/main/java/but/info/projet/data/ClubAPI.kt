@@ -71,5 +71,5 @@ class ClubAPI {
         }
     }
 
-    fun getAllActives() = clubs.filter { club -> club.active == 1 }
+    fun getActives(): List<Club> = clubs.filter { club -> club.active == 1 }
 }
