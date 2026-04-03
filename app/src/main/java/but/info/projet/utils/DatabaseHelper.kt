@@ -13,7 +13,8 @@ class DatabaseHelper(context: Context) :
                 id INTEGER PRIMARY KEY,
                 name TEXT,
                 address TEXT,
-                active INTEGER
+                active INTEGER DEFAULT 1,
+                dirty INTEGER DEFAULT 0
             )
         """)
     }

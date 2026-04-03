@@ -65,10 +65,7 @@ class ClubDao(private val dbHelper: DatabaseHelper) {
             }
 
             db.insertWithOnConflict(
-                "club",
-                null,
-                values,
-                SQLiteDatabase.CONFLICT_REPLACE
+                "club", null, values, SQLiteDatabase.CONFLICT_REPLACE
             )
         }
     }
@@ -84,10 +81,18 @@ class ClubDao(private val dbHelper: DatabaseHelper) {
         }
 
         db.update(
-            "club",
-            values,
-            "id = ?",
-            arrayOf(club.id.toString())
+            "club", values, "id = ?", arrayOf(club.id.toString())
         )
+    }
+
+    fun deactivateClub(club: Club) {
+        val db = dbHelper.writableDatabase
+
+        val values = ContentValues().apply {
+            put("active", 0)
+            put("dirty", 1)
+        }
+
+        db.update("club", values, "id = ?", arrayOf(club.id.toString()))
     }
 }

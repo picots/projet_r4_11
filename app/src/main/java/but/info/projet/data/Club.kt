@@ -4,5 +4,6 @@ data class Club(
     val id: Long,
     val name: String,
     val address: String,
-    var active: Int
+    var active: Int = 1,
+    var dirty: Int = 0
 )
