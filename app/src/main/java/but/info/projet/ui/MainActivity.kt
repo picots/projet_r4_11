@@ -58,8 +58,6 @@ fun ClubScreen(modifier: Modifier, viewModel: ClubViewModel) {
         viewModel.loadClubs()
     }
 
-    Log.e("clubs",  viewModel.clubs.toString())
-
     if(viewModel.error != null)
         Row(modifier = modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center){Text(viewModel.error!!)}
     else

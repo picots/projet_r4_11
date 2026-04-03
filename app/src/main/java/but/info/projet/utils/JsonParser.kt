@@ -22,7 +22,6 @@ class JsonParser {
                 address = obj.getString("club_address"),
                 active = obj.getInt("club_active")
             )
-            Log.e("club", club.toString())
             clubs.add(club)
         }
         return clubs
