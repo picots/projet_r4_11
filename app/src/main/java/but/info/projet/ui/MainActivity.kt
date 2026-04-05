@@ -89,11 +89,34 @@ fun App(modifier: Modifier = Modifier.Companion) {
         }
         clubs = withContext(Dispatchers.IO) { repository.getAllLocal() }
         if (!success) {
-            error = "Desactivation distante impossible. Verifie tes droits."
             if (!repository.hasAuthentication()) {
                 pendingDeactivation = club
+                loginError = null
                 showLoginDialog = true
             }
+            error = null
+        } else {
+            error = null
+        }
+    }
+
+    suspend fun performReactivation(club: Club) {
+        // Optimistic UI: reflect local reactivation immediately.
+        clubs = clubs.map {
+            if (it.id == club.id) it.copy(active = 1, dirty = 1) else it
+        }
+
+        val success = withContext(Dispatchers.IO) {
+            repository.reactivateClub(club.id)
+        }
+        clubs = withContext(Dispatchers.IO) { repository.getAllLocal() }
+        if (!success) {
+            if (!repository.hasAuthentication()) {
+                pendingDeactivation = club
+                loginError = null
+                showLoginDialog = true
+            }
+            error = null
         } else {
             error = null
         }
@@ -144,13 +167,12 @@ fun App(modifier: Modifier = Modifier.Companion) {
                 onShowDisabledChange = { showDisabledClubs = it },
                 onDeactivate = { club ->
                     scope.launch {
-                        if (!repository.hasAuthentication()) {
-                            pendingDeactivation = club
-                            loginError = null
-                            showLoginDialog = true
-                            return@launch
-                        }
                         performDeactivation(club)
+                    }
+                },
+                onReactivate = { club ->
+                    scope.launch {
+                        performReactivation(club)
                     }
                 }
             )
@@ -192,11 +214,8 @@ fun App(modifier: Modifier = Modifier.Companion) {
 
                     showLoginDialog = false
                     error = null
-                    val target = pendingDeactivation
                     pendingDeactivation = null
-                    if (target != null) {
-                        performDeactivation(target)
-                    }
+                    clubs = withContext(Dispatchers.IO) { repository.synchronize() }
                 }
             }
         )
@@ -210,7 +229,8 @@ private fun ClubList(
     error: String? = null,
     showDisabledClubs: Boolean = true,
     onShowDisabledChange: (Boolean) -> Unit = {},
-    onDeactivate: (Club) -> Unit
+    onDeactivate: (Club) -> Unit,
+    onReactivate: (Club) -> Unit
 ) {
     var dropdownExpanded by remember { mutableStateOf(false) }
     val filteredClubs = if (showDisabledClubs) clubs else clubs.filter { it.active == 1 }
@@ -285,6 +305,12 @@ private fun ClubList(
                                     color = Color.Red,
                                     modifier = Modifier.padding(top = 8.dp)
                                 )
+                                Button(
+                                    onClick = { onReactivate(club) },
+                                    modifier = Modifier.padding(top = 8.dp)
+                                ) {
+                                    Text("Reactiver")
+                                }
                             } else {
                                 Button(
                                     onClick = { onDeactivate(club) },
@@ -322,7 +348,7 @@ private fun LoginDialog(
                     value = identifier,
                     onValueChange = onIdentifierChange,
                     label = { Text("Identifiant") },
-                    placeholder = { Text("pauld") },
+                    placeholder = { Text("admin") },
                     singleLine = true,
                     enabled = !loading
                 )
@@ -371,7 +397,8 @@ fun AppPreview() {
                 Club(1, "Club A", "Adresse A"),
                 Club(2, "Club B", "Adresse B", active = 0)
             ),
-            onDeactivate = {}
+            onDeactivate = {},
+            onReactivate = {}
         )
     }
 }

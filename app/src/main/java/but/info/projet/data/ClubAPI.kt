@@ -96,8 +96,22 @@ class ClubAPI {
         return putClub(id, """{"club_active":0}""")
     }
 
+    fun reactivateClub(id: Long): Boolean {
+        return putClub(id, """{"club_active":1}""")
+    }
+
     fun getActives(): List<Club> {
         return getAllClubs().filter { it.active == 1 }
+    }
+
+    fun isClubInactiveRemote(id: Long): Boolean {
+        val remote = getAllClubs().firstOrNull { it.id == id } ?: return false
+        return remote.active == 0
+    }
+
+    fun isClubActiveRemote(id: Long): Boolean {
+        val remote = getAllClubs().firstOrNull { it.id == id } ?: return false
+        return remote.active == 1
     }
 
     private fun putClub(id: Long, payload: String): Boolean {

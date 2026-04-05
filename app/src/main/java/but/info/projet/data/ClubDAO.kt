@@ -82,11 +82,26 @@ class ClubDao(private val dbHelper: DatabaseHelper) {
         deactivateById(club.id)
     }
 
+    fun reactivateClub(club: Club) {
+        reactivateById(club.id)
+    }
+
     fun deactivateById(id: Long): Int {
         val db = dbHelper.writableDatabase
 
         val values = ContentValues().apply {
             put("active", 0)
+            put("dirty", 1)
+        }
+
+        return db.update("club", values, "id = ?", arrayOf(id.toString()))
+    }
+
+    fun reactivateById(id: Long): Int {
+        val db = dbHelper.writableDatabase
+
+        val values = ContentValues().apply {
+            put("active", 1)
             put("dirty", 1)
         }
 

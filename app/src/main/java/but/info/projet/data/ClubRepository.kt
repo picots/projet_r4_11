@@ -36,6 +36,10 @@ class ClubRepository(
         clubDao.deactivateById(id)
     }
 
+    fun reactivateLocal(id: Long) {
+        clubDao.reactivateById(id)
+    }
+
     fun getPendingSync(): List<Club> {
         return clubDao.getDirty()
     }
@@ -94,11 +98,22 @@ class ClubRepository(
 
     fun deactivateClub(id: Long): Boolean {
         deactivateLocal(id)
-        val success = clubApi.deactivateClub(id)
-        if (success) {
+        val pushed = clubApi.deactivateClub(id)
+        val synced = pushed || clubApi.isClubInactiveRemote(id)
+        if (synced) {
             markSynced(id)
         }
-        return success
+        return synced
+    }
+
+    fun reactivateClub(id: Long): Boolean {
+        reactivateLocal(id)
+        val pushed = clubApi.reactivateClub(id)
+        val synced = pushed || clubApi.isClubActiveRemote(id)
+        if (synced) {
+            markSynced(id)
+        }
+        return synced
     }
 
     fun getActives(): List<Club> = getAllActiveLocal()
